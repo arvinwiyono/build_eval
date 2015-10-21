@@ -20,6 +20,7 @@ Currently supports:
 
 * [TeamCity](https://www.jetbrains.com/teamcity/) via Basic Authentication
 * [Travis CI](https://travis-ci.org/) for Open Source projects
+* [Jenkins CI](https://jenkins-ci.org/)
 
 ### TeamCity Integration ###
 
