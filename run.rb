@@ -3,7 +3,9 @@ require 'build_eval'
 
 jenkins_monitor = BuildEval.server(
     type: :Jenkins,
-    uri: 'https://dev-idam-jenkins.cse.dev.myob.com'
+    uri: 'https://dev-idam-jenkins.cse.dev.myob.com',
+    username: 'fill in username',
+    password: 'fill in password'
 ).monitor('master_build_packages')
 
 light = Blinky.new.light

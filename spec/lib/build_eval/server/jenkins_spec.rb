@@ -1,7 +1,10 @@
 describe BuildEval::Server::Jenkins do
 
   let(:uri) { "https://dev-idam-jenkins.cse.dev.myob.com" }
-  let(:jenkins) { described_class.new(uri: uri) }
+  let(:username) { "some_username" }
+  let(:password) { "some_password" }
+
+  let(:jenkins) { described_class.new(uri: uri, username: username, password: password) }
 
   describe "#build_result" do
 
