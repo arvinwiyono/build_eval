@@ -5,7 +5,7 @@ jenkins_monitor = BuildEval.server(
     uri: 'https://dev-idam-jenkins.cse.dev.myob.com',
     username: 'jenkins',
     password: 'password1'
-).monitor('master_build_packages')
+).monitor('master_build_packages', 'identityserver_performance_testing', 'master_deploy_identityserver_sit')
 
 loop do
 	results = jenkins_monitor.evaluate
@@ -14,4 +14,5 @@ loop do
 
 	# Describes the results of all builds
 	puts results.to_s
+	puts results.status.to_sym
 end
