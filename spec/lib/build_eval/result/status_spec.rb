@@ -55,6 +55,7 @@ describe BuildEval::Result::Status do
       let(:statuses) do
         [ BuildEval::Result::Status::ERROR,
           BuildEval::Result::Status::FAILURE,
+          BuildEval::Result::Status::WARNING,
           BuildEval::Result::Status::UNKNOWN,
           BuildEval::Result::Status::SUCCESS ]
       end
@@ -70,6 +71,7 @@ describe BuildEval::Result::Status do
       let(:statuses) do
         [ BuildEval::Result::Status::SUCCESS,
           BuildEval::Result::Status::UNKNOWN,
+          BuildEval::Result::Status::WARNING,
           BuildEval::Result::Status::FAILURE,
           BuildEval::Result::Status::ERROR ]
       end
@@ -98,6 +100,7 @@ describe BuildEval::Result::Status do
 
     {
       "UNKNOWN" => BuildEval::Result::Status::UNKNOWN,
+      "WARNING" => BuildEval::Result::Status::WARNING,
       "FAILURE" => BuildEval::Result::Status::FAILURE,
       "ERROR"   => BuildEval::Result::Status::ERROR
     }.each do |name, status|
@@ -120,7 +123,7 @@ describe BuildEval::Result::Status do
 
     subject { status.to_sym }
 
-    { SUCCESS: :success!, UNKNOWN: :warning!, FAILURE: :failure!, ERROR: :failure! }.each do |name, expected_symbol|
+    { SUCCESS: :success!, UNKNOWN: :warning!, WARNING: :warning!, FAILURE: :failure!, ERROR: :failure! }.each do |name, expected_symbol|
 
       context "when the status is #{name}" do
 
@@ -140,7 +143,7 @@ describe BuildEval::Result::Status do
 
     subject { status.to_s }
 
-    { SUCCESS: "succeeded", UNKNOWN: "unknown", FAILURE: "failed", ERROR: "errored" }.each do |name, expected_string|
+    { SUCCESS: "succeeded", UNKNOWN: "unknown", WARNING: "warning", FAILURE: "failed", ERROR: "errored" }.each do |name, expected_string|
 
       context "when the status is #{name}" do
 

@@ -12,7 +12,8 @@ describe BuildEval::Server::Jenkins do
     let(:response_code)    { nil }
     let(:response_message) { nil }
     let(:response_body)    { nil }
-    let(:response)         do
+    
+    let(:response) do
       instance_double(Net::HTTPResponse, code: response_code, message: response_message, body: response_body)
     end
 
@@ -21,8 +22,8 @@ describe BuildEval::Server::Jenkins do
     before(:example) { allow(BuildEval::Http).to receive(:get).and_return(response) }
 
     it "issues a get request for the build" do
-      expected_uri = "#{uri}/cc.xml"
-      expect(BuildEval::Http).to receive(:get).with(expected_uri)
+      expected_uri = "#{uri}/api/xml"
+      expect(BuildEval::Http).to receive(:get).with(expected_uri, hash_including(username: username, password: password))
 
       subject rescue Exception
     end
@@ -31,25 +32,36 @@ describe BuildEval::Server::Jenkins do
 
       let(:response_code)       { "200" }
       let(:response_message)    { "OK" }
-      let(:latest_build_status) { "Failure" }
+      let(:latest_build_status) { "red" }
       let(:response_body) do
         <<-RESPONSE
-         <Projects>
-          <Project webUrl="#{uri}/job/idam_dev_deploy/" name="#{build_name}" lastBuildLabel="190" lastBuildTime="2015-10-09T02:39:36Z" lastBuildStatus="#{latest_build_status}" activity="Sleeping"/>
-          <Project webUrl="https://dev-idam-jenkins.cse.dev.myob.com/job/Jenkins%20Backup/" name="Jenkins Backup" lastBuildLabel="71" lastBuildTime="2015-10-12T17:07:00Z" lastBuildStatus="Success" activity="Sleeping"/>
-          <Project webUrl="https://dev-idam-jenkins.cse.dev.myob.com/job/LD_build_packages/" name="LD_build_packages" lastBuildLabel="15" lastBuildTime="2015-10-13T01:40:32Z" lastBuildStatus="Success" activity="Sleeping"/>
-         </Projects>
+          <hudson>
+            <assignedLabel/>
+            <mode>EXCLUSIVE</mode>
+            <nodeDescription>the master Jenkins node</nodeDescription>
+            <nodeName/>
+            <numExecutors>1</numExecutors>
+            <job>
+              <name>#{build_name}</name>
+              <url>#{uri}/job/identityserver_performance_testing/</url>
+              <color>#{latest_build_status}</color>
+            </job>
+            <job>
+              <name>Jenkins Backup</name>
+              <url>https://dev-idam-jenkins.cse.dev.myob.com/job/Jenkins%20Backup/</url>
+              <color>blue</color>
+            </job>
+          </hudson>
         RESPONSE
       end
 
       it "creates a build result containing the build name" do
         expect(BuildEval::Result::BuildResult).to receive(:create).with(hash_including(build_name: build_name))
-
         subject
       end
 
       it "creates a build result containing the latest build status" do
-        expect(BuildEval::Result::BuildResult).to receive(:create).with(hash_including(status_name: latest_build_status))
+        expect(BuildEval::Result::BuildResult).to receive(:create).with(hash_including(status_name: "Failure"))
         subject
       end
 
