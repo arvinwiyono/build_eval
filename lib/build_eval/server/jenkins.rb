@@ -13,7 +13,7 @@ module BuildEval
         response = BuildEval::Http.get("#{@base_uri}/api/xml", username: @username, password: @password)
         color = get_build_color(response.body, name)
         build_status = determine_status(color.to_s)
-        raise "Unexpected build response: #{response.message}" unless build_status
+        raise "Unexpected build response: #{response.message} for project '#{name}'" unless build_status
         BuildEval::Result::BuildResult.create(build_name: name, status_name: build_status)
       end
 
@@ -29,13 +29,13 @@ module BuildEval
 
         def determine_status(color)
           case color
-          when "red"
+          when "red", "red_anime"
             return "Failure"
-          when "blue"
+          when "blue", "blue_anime"
             return "Success"
-          when "aborted"
+          when "aborted", "aborted_anime"
             return "Unknown"
-          when "yellow"
+          when "yellow", "yello_anime"
             return "Warning"
           else
             return nil
