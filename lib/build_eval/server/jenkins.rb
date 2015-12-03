@@ -35,7 +35,7 @@ module BuildEval
             return "Success"
           when "aborted", "aborted_anime"
             return "Unknown"
-          when "yellow", "yello_anime"
+          when "yellow", "yellow_anime"
             return "Warning"
           else
             return nil
